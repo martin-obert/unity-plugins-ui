@@ -1,0 +1,25 @@
+{
+  "name": "com.obert.template",
+  "version": "1.1.0",
+  "displayName": "Obert - Template",
+  "description": "Template plugin",
+  "unity": "2021.3",
+  "unityRelease": "9f1",
+  "documentationUrl": "https://github.com/martin-obert/unity-plugins-template?path=/Assets/Scripts/Readme.md",
+  "changelogUrl": "https://github.com/martin-obert/unity-plugins-template?path=/Assets/Scripts/CHANGELOG.md",
+  "licensesUrl": "https://github.com/martin-obert/unity-plugins-template?path=/Assets/Scripts/LICENCE.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/martin-obert/unity-plugins-template.git"
+  },
+  "keywords": [
+    "obert",
+    "template",
+    "core"
+  ],
+  "author": {
+    "name": "Martin Obert",
+    "email": "martin@obert.cz",
+    "url": "https://github.com/martin-obert"
+  }
+}

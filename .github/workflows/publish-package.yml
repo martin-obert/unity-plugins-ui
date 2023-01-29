@@ -1,0 +1,33 @@
+name: NPM Publish package
+
+on:
+  pull_request:
+    types: [ closed ]
+    branches: [ 'main' ]
+    
+defaults:
+  run:
+    working-directory: Assets/Scripts
+env:
+  SERVER: ${{ secrets.NPM_REGISTRY_IP }}
+  TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+jobs:
+
+  publish:
+    if: startsWith(github.head_ref, 'release-please')
+    environment: prod
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: ㊙️ Creating NPMRC
+        run: |
+             cat << EOF > .npmrc
+             //$SERVER/:_authToken="$TOKEN"
+             EOF
+      - name: ⬆️ NPM PUBLISH
+        run: npm publish --registry http://$SERVER
+      - name: ✅ COMPLETE
+        run: echo "DONE"
