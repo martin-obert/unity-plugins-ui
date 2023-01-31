@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.obert.common": {
+      "version": "1.9.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "http://upm.obert.cz"
+    },
     "com.unity.2d.animation": {
       "version": "7.0.6",
       "depth": 1,

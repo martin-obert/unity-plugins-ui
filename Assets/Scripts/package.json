@@ -1,25 +1,32 @@
 {
-  "name": "com.obert.template",
+  "name": "com.obert.ui",
   "version": "1.1.0",
-  "displayName": "Obert - Template",
-  "description": "Template plugin",
+  "displayName": "Obert - UI",
+  "description": "UI plugin",
   "unity": "2021.3",
   "unityRelease": "9f1",
-  "documentationUrl": "https://github.com/martin-obert/unity-plugins-template?path=/Assets/Scripts/Readme.md",
-  "changelogUrl": "https://github.com/martin-obert/unity-plugins-template?path=/Assets/Scripts/CHANGELOG.md",
-  "licensesUrl": "https://github.com/martin-obert/unity-plugins-template?path=/Assets/Scripts/LICENCE.md",
+  "documentationUrl": "https://github.com/martin-obert/unity-plugins-ui?path=/Assets/Scripts/Readme.md",
+  "changelogUrl": "https://github.com/martin-obert/unity-plugins-ui?path=/Assets/Scripts/CHANGELOG.md",
+  "licensesUrl": "https://github.com/martin-obert/unity-plugins-ui?path=/Assets/Scripts/LICENCE.md",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/martin-obert/unity-plugins-template.git"
+    "url": "git+https://github.com/martin-obert/unity-plugins-ui.git"
   },
   "keywords": [
     "obert",
-    "template",
+    "ui",
     "core"
   ],
   "author": {
     "name": "Martin Obert",
     "email": "martin@obert.cz",
     "url": "https://github.com/martin-obert"
-  }
+  },
+  "samples": [
+    {
+      "displayName": "Form validations",
+      "description": "Simple form with text input field validations. Observe how Submit button behaves depending on form state",
+      "path": "Samples~/Forms"
+    }
+  ]
 }
