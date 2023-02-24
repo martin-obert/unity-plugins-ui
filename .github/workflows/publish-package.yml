@@ -25,8 +25,8 @@ jobs:
           node-version: 16
       - name: Copy Samples
         run: |
-          rm -r -f Assets/Scripts/Samples~/*
-          rsync -av --exclude '*.meta' Assets/Samples/* Assets/Scripts/Samples~/
+          rm -r -f Samples~/*
+          rsync -av --exclude '*.meta' ../Samples/* Samples~/
       - name: ㊙️ Creating NPMRC
         run: |
              cat << EOF > .npmrc
