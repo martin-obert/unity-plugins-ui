@@ -23,6 +23,10 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 16
+      - name: Copy Samples
+        run: |
+          rm -r -f Assets/Scripts/Samples~/*
+          rsync -av --exclude '*.meta' Assets/Samples/* Assets/Scripts/Samples~/
       - name: ㊙️ Creating NPMRC
         run: |
              cat << EOF > .npmrc
