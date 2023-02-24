@@ -1,6 +1,7 @@
 name: NPM Publish package
 
 on:
+  workflow_dispatch:
   pull_request:
     types: [ closed ]
     branches: [ 'main' ]
@@ -14,7 +15,7 @@ env:
 jobs:
 
   publish:
-    if: startsWith(github.head_ref, 'release-please')
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.head_ref, 'release-please')
     environment: prod
     runs-on: ubuntu-latest
     steps:
