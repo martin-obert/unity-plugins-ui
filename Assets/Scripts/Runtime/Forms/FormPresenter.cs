@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Newtonsoft.Json;
 using Obert.Common.Runtime.Extensions;
-using UnityEngine;
+using Obert.UI.Runtime.Serializers;
 
 namespace Obert.UI.Runtime.Forms
 {
@@ -13,6 +11,8 @@ namespace Obert.UI.Runtime.Forms
     {
         private readonly IFieldPresenter[] _fields;
         private bool _isValid = true;
+        private string[] _validationErrors;
+        private string _value;
 
         public bool IsValid
         {
@@ -20,6 +20,7 @@ namespace Obert.UI.Runtime.Forms
             private set
             {
                 if (value == _isValid) return;
+
                 _isValid = value;
                 OnPropertyChanged();
             }
@@ -51,51 +52,60 @@ namespace Obert.UI.Runtime.Forms
 
         public void Validate()
         {
+            foreach (var field in _fields)
+            {
+                field.Validate();
+            }
             IsValid = _fields.All(x => x.IsValid);
+            if (!IsValid)
+            {
+                ValidationErrors = _fields.SelectMany(x => x.ValidationErrors).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            }
         }
 
-        public string[] ValidationErrors { get; private set; }
+        public string[] ValidationErrors
+        {
+            get => _validationErrors;
+            private set
+            {
+                if (Equals(value, _validationErrors)) return;
+
+                _validationErrors = value;
+                OnPropertyChanged();
+            }
+        }
 
         public string FieldValue
         {
-            get
-            {
-                var result = new Dictionary<string, Dictionary<string, string>>
-                    { { FieldName, ToDictionary() } };
-                return JsonConvert.SerializeObject(result);
-            }
-
+            get => FormSerializer.ToJsonString(this);
             set
             {
+                if (value == _value) return;
+
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    foreach (var field in _fields)
-                    {
-                        field.FieldValue = null;
-                    }
-                    return;
+                    Clear();
+                }
+                else
+                {
+                    FormSerializer.SetInternalFieldsValues(value, key => _fields.Where(x => x.FieldName.Equals(key)));
                 }
 
-                try
-                {
-                    var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(value);
-                    foreach (var (key, val) in dict)
-                    {
-                        var matchingFields = _fields.Where(x => x.FieldName.Equals(key)).ToArray();
-                        foreach (var matchingField in matchingFields)
-                        {
-                            matchingField.FieldValue = val;
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Debug.LogException(e);
-                }
+                Validate();
+                OnPropertyChanged();
             }
         }
 
-        public Dictionary<string, string> ToDictionary() => _fields.ToDictionary(x => x.FieldName, x => x.FieldValue);
+        public void Clear()
+        {
+            foreach (var presenter in _fields)
+            {
+                presenter.FieldValue = null;
+            }
+            _value = null;
+        }
+
+        public Dictionary<string, string> GetFieldsAsDictionary() => _fields.ToDictionary(x => x.FieldName, x => x.FieldValue);
 
         public string FieldName { get; }
 
@@ -109,6 +119,7 @@ namespace Obert.UI.Runtime.Forms
         protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+
             field = value;
             OnPropertyChanged(propertyName);
             return true;

@@ -8,13 +8,13 @@ using UnityEngine.Events;
 
 namespace Obert.UI.Runtime.Forms
 {
-    public class TextFieldInputPresenter : IFieldPresenter
+    public class TextInputPresenter : IFieldPresenter
     {
         private readonly Action _unsubscribe;
         private readonly IFieldValidator[] _validators;
         private string _fieldValue;
         private bool _isValid = true;
-
+        private bool _isDirty = true;
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -48,6 +48,7 @@ namespace Obert.UI.Runtime.Forms
             {
                 if (value == _fieldValue) return;
                 _fieldValue = value;
+                _isDirty = true;
                 OnPropertyChanged();
                 Validate();
             }
@@ -57,14 +58,18 @@ namespace Obert.UI.Runtime.Forms
 
         public void Validate()
         {
+            if(!_isDirty) return;
+
             ValidationErrors = _validators.Select(x => x.Validate(_fieldValue))
                 .Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
             IsValid = ValidationErrors.IsNullOrEmpty();
+
+            _isDirty = false;
         }
 
         public string[] ValidationErrors { get; private set; }
 
-        public TextFieldInputPresenter(UnityEvent<string> valueProvider, string fieldName,
+        public TextInputPresenter(UnityEvent<string> valueProvider, string fieldName,
             params IFieldValidator[] validators)
         {
             FieldName = fieldName;
