@@ -27,6 +27,14 @@
       "displayName": "Form validations",
       "description": "Simple form with text input field validations. Observe how Submit button behaves depending on form state",
       "path": "Samples~/Forms"
+    },
+    {
+      "displayName": "Repeaters",
+      "description": "Repeaters samples",
+      "path": "Samples~/Repeaters"
     }
-  ]
+  ],
+  "dependencies": {
+    "com.obert.common": "1.14.0"
+  }
 }

@@ -22,30 +22,21 @@ namespace Obert.UI.Runtime.Forms
         protected virtual void Awake()
         {
             Assert.IsNotNull(PresenterFactory);
-            
-            BindPresenter(PresenterFactory());
+
         }
 
         protected virtual void Start()
         {
-           
-        }
 
-        protected virtual void OnEnable()
-        {
-           
-        }
-
-        protected virtual void OnDisable()
-        {
-            
         }
 
         protected abstract Func<IFieldPresenter> PresenterFactory { get; }
 
         protected void BindPresenter(IFieldPresenter fieldPresenter)
         {
-            FieldPresenter = fieldPresenter;
+            if (FieldPresenter != null) throw new Exception("Presenter is already bound");
+
+            FieldPresenter = fieldPresenter ?? throw new ArgumentNullException(nameof(fieldPresenter));
             FieldPresenter.PropertyChanged += PresenterOnPropertyChanged;
         }
 
@@ -69,9 +60,11 @@ namespace Obert.UI.Runtime.Forms
             FieldPresenter.Dispose();
         }
 
-        public string GetValue() => FieldPresenter.FieldValue;
-
-        public void SetValue(string value) => FieldPresenter.FieldValue = value;
+        public string Value
+        {
+            get => FieldPresenter.FieldValue;
+            set => FieldPresenter.FieldValue = value;
+        }
 
         public void Dispose()
         {
