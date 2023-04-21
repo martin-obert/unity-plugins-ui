@@ -2,10 +2,11 @@
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Obert.UI.Runtime.Forms
 {
-    public class InputTextFieldInputView : FieldView
+    public class TextInputView : FieldView
     {
         [Header("Attributes")] [SerializeField]
         private TMP_InputField inputField;
@@ -18,16 +19,24 @@ namespace Obert.UI.Runtime.Forms
 
         protected override void Awake()
         {
-            _validators = fieldValidators?.OfType<IFieldValidator>().ToArray() ?? Array.Empty<IFieldValidator>();
+            base.Awake();
 
+            Assert.IsNotNull(inputField, "inputField != null");
+
+        }
+
+        protected override void Start()
+        {
+            _validators = fieldValidators?.OfType<IFieldValidator>().ToArray() ?? Array.Empty<IFieldValidator>();
             if (isRequired)
             {
                 _validators = _validators.Append(new FieldIsRequiredValidator(() => isRequiredErrorMessage)).ToArray();
             }
-            base.Awake();
+
+            BindPresenter(PresenterFactory());
         }
 
         protected override Func<IFieldPresenter> PresenterFactory => () =>
-            new TextFieldInputPresenter(inputField.onValueChanged, FieldName, _validators);
+            new TextInputPresenter(inputField.onValueChanged, FieldName, _validators);
     }
 }

@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement style="width: 100%; justify-content: center; align-items: center;">
+        <Obert.UI.Runtime.Forms.ValidatableInput focusable="true" style="width: 50%; justify-content: center; align-items: center;" />
+    </ui:VisualElement>
+</ui:UXML>
