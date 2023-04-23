@@ -35,6 +35,6 @@
     }
   ],
   "dependencies": {
-    "com.obert.common": "1.14.0"
+    "com.obert.common": "1.15.1"
   }
 }
