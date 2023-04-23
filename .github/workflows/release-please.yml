@@ -9,6 +9,10 @@ defaults:
   run:
     working-directory: Assets/Scripts
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   check_and_generate_files:
     environment: prod
