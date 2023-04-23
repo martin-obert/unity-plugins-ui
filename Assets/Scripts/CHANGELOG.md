@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/martin-obert/unity-plugins-ui/compare/v1.0.1...v1.0.2) (2023-04-23)
+
+
+### Bug Fixes
+
+* TMP dependencies ([#14](https://github.com/martin-obert/unity-plugins-ui/issues/14)) ([7d94659](https://github.com/martin-obert/unity-plugins-ui/commit/7d946591aa56505dedac02ffc8d095e3bcf29c52))
+
 ## [1.0.1](https://github.com/martin-obert/unity-plugins-ui/compare/v1.0.0...v1.0.1) (2023-04-23)
 
 
