@@ -2,8 +2,8 @@
     "name": "Obert.UI",
     "rootNamespace": "Obert.UI",
     "references": [
-        "GUID:38636a0982891e0469cb8fdd3564d3a9",
-        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+        "Obert.Common",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
