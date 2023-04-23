@@ -6,6 +6,11 @@ using Obert.UI.Runtime.Forms;
 
 namespace Obert.UI.Runtime.Serializers
 {
+    /// <summary>
+    /// Static methods for form JSON serialization / deserialization using Newtonsoft.Json
+    /// <seealso cref="JsonConvert.SerializeObject(object?)"/>
+    /// <seealso cref="JsonConvert.DeserializeObject(string)"/>
+    /// </summary>
     public static class FormSerializer
     {
         public static IDictionary<string, IDictionary<string, string>> ToDictionary(FormPresenter presenter)
