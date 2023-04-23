@@ -35,6 +35,7 @@
     }
   ],
   "dependencies": {
-    "com.obert.common": "1.15.1"
+    "com.obert.common": "1.15.1",
+    "com.unity.textmeshpro": "3.0.6"
   }
 }
