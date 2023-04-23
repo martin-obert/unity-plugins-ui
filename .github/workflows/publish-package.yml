@@ -1,6 +1,7 @@
 name: NPM Publish package
 
 on:
+  workflow_dispatch:
   pull_request:
     types: [ closed ]
     branches: [ 'main' ]
@@ -14,7 +15,7 @@ env:
 jobs:
 
   publish:
-    if: startsWith(github.head_ref, 'release-please')
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.head_ref, 'release-please')
     environment: prod
     runs-on: ubuntu-latest
     steps:
@@ -22,6 +23,10 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 16
+      - name: Copy Samples
+        run: |
+          rm -r -f Samples~/*
+          rsync -av --exclude '*.meta' ../Samples/* Samples~/
       - name: ㊙️ Creating NPMRC
         run: |
              cat << EOF > .npmrc

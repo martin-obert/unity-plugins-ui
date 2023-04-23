@@ -11,6 +11,7 @@ defaults:
 
 jobs:
   check_and_generate_files:
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     environment: prod
     runs-on: ubuntu-latest
     steps:
