@@ -1,59 +1,100 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Obert.Common.Runtime.Extensions;
 using UnityEngine;
 
 namespace Obert.UI.Runtime.Repeaters
 {
     public abstract class RepeaterView : MonoBehaviour
     {
-        public abstract void BindDataSource(IReadOnlyDataSource dataSource);
+        public abstract void BindDataSource(IReadOnlyDataSource readOnlyDataSource);
     }
 
     public abstract class RepeaterView<TData, TItemInstance> : RepeaterView where TItemInstance : Component
     {
         [SerializeField] private Transform container;
-        private TItemInstance[] _instances = Array.Empty<TItemInstance>();
+      
+        [SerializeField] private bool showEmptySlots;
+        [SerializeField] private int emptySlotsCount;
+
+        private GameObject[] _emptyInstances = Array.Empty<GameObject>();
+        protected List<TItemInstance> Instances { get; } = new();
+
         protected Transform Container => container;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             if (!container)
                 container = transform;
         }
 
-        protected abstract Func<TItemInstance> ItemFactory { get; }
-
-        public override void BindDataSource(IReadOnlyDataSource dataSource) => BindDataSource((IReadOnlyDataSource<TData>)dataSource);
-
-        public void BindDataSource(IReadOnlyDataSource<TData> dataSource) => BindData(dataSource.DataItems, dataSource.BindItem);
-
-        public void BindData(TData[] data, Action<TData, TItemInstance> bindAction)
+        protected virtual void Start()
         {
-            if (data.Length > _instances.Length)
-            {
-                var temp = _instances;
-                _instances = new TItemInstance[data.Length];
-                Array.Copy(temp, _instances, temp.Length);
-            }
+            if (!showEmptySlots) return;
 
-            for (int i = 0; i < data.Length; i++)
+            container.ClearChildGameObjects();
+            _emptyInstances = new GameObject[emptySlotsCount];
+            for (var i = 0; i < _emptyInstances.Length; i++)
             {
-                var instance = _instances[i];
-                if (instance == null)
+                _emptyInstances[i] = EmptySlotFactory.Invoke();
+            }
+        }
+
+        protected abstract Func<TItemInstance> ItemFactory { get; }
+        protected virtual Func<GameObject> EmptySlotFactory { get; }
+
+        private IDisposable _dataSourceSub;
+
+        public override void BindDataSource(IReadOnlyDataSource readOnlyDataSource) =>
+            BindDataSource((IReadOnlyDataSource<TData>)readOnlyDataSource);
+
+        protected virtual void BindDataSource(IReadOnlyDataSource<TData> dataSource) =>
+            BindData(dataSource.DataItems, dataSource.BindItem);
+
+
+        protected virtual void CreateInstance(TData data, Action<TData, TItemInstance> bindAction)
+        {
+            var freeInstance = Instances.FirstOrDefault(x => !x.gameObject.activeInHierarchy);
+            if (!freeInstance)
+            {
+                freeInstance = ItemFactory();
+                if (showEmptySlots)
                 {
-                    _instances[i] = instance = ItemFactory();
+                    freeInstance.transform.SetSiblingIndex(Instances.Count(x => x.gameObject.activeInHierarchy));
                 }
 
-                bindAction(data[i], instance);
-                _instances[i].gameObject.SetActive(true);
+                Instances.Add(freeInstance);
             }
 
-            var overflowInstances = _instances.Length - data.Length;
-            if (overflowInstances > 0)
+            bindAction(data, freeInstance);
+            freeInstance.gameObject.SetActive(true);
+            _emptyInstances.FirstOrDefault(x => x.activeInHierarchy)?.SetActive(false);
+        }
+
+        protected virtual void DeleteInstance(TItemInstance instance)
+        {
+            instance.gameObject.SetActive(false);
+            _emptyInstances.LastOrDefault(x => !x.activeInHierarchy)?.SetActive(true);
+        }
+
+        protected virtual void ClearAllInstances()
+        {
+            foreach (var itemInstance in Instances)
             {
-                for (int i = data.Length - 1; i < _instances.Length; i++)
-                {
-                    _instances[i].gameObject.SetActive(false);
-                }
+                DeleteInstance(itemInstance);
+            }
+        }
+
+        protected virtual void BindData(IEnumerable<TData> data, Action<TData, TItemInstance> bindAction)
+        {
+            var items = data as TData[] ?? data.ToArray();
+
+            ClearAllInstances();
+
+            foreach (var t in items)
+            {
+                CreateInstance(t, bindAction);
             }
         }
     }

@@ -18,6 +18,15 @@ namespace Obert.UI.Runtime.Repeaters
 
             BindItem(data, view);
         }
+
+        protected PlaceholderDataSource()
+        {
+            
+        }
+        
+        protected PlaceholderDataSource(IEnumerable<TData> dataItems) :base(dataItems)
+        {
+        }
     }
 
     public abstract class PlaceholderDataSource<TData> : IDataSource<TData>
