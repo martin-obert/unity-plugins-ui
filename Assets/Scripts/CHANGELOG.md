@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/martin-obert/unity-plugins-ui/compare/v1.0.2...v1.1.0) (2023-05-19)
+
+
+### Features
+
+* placeholder data sources ([#16](https://github.com/martin-obert/unity-plugins-ui/issues/16)) ([faca20c](https://github.com/martin-obert/unity-plugins-ui/commit/faca20cae6653289419f72d10486d442b9224c90))
+
 ## [1.0.2](https://github.com/martin-obert/unity-plugins-ui/compare/v1.0.1...v1.0.2) (2023-04-23)
 
 
