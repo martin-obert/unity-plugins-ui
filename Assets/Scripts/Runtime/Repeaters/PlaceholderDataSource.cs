@@ -9,23 +9,20 @@ namespace Obert.UI.Runtime.Repeaters
     public abstract class PlaceholderDataSource<TData, TView> : PlaceholderDataSource<TData> where TView : Component
     {
         protected abstract void BindItem(TData data, TView view);
-        protected PlaceholderDataSource(IEnumerable<TData> dataItems) :base(dataItems)
+
+        protected PlaceholderDataSource(IEnumerable<TData> dataItems) : base(dataItems)
         {
         }
+
+        protected PlaceholderDataSource()
+        {
+        }
+
         public override void BindItem<TItemInstance>(TData data, TItemInstance instance)
         {
             if (instance is not TView view) throw new Exception();
 
             BindItem(data, view);
-        }
-
-        protected PlaceholderDataSource()
-        {
-            
-        }
-        
-        protected PlaceholderDataSource(IEnumerable<TData> dataItems) :base(dataItems)
-        {
         }
     }
 
@@ -58,7 +55,8 @@ namespace Obert.UI.Runtime.Repeaters
             BindItem(item, instance);
         }
 
-        public abstract void BindItem<TItemInstance>(TData data, TItemInstance instance) where TItemInstance : Component;
+        public abstract void BindItem<TItemInstance>(TData data, TItemInstance instance)
+            where TItemInstance : Component;
 
         public virtual void AddItem(TData item)
         {
@@ -68,18 +66,21 @@ namespace Obert.UI.Runtime.Repeaters
 
         public virtual void RemoveItem(TData item)
         {
-            if (DataList.Remove(item)) OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
+            if (DataList.Remove(item))
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
         }
 
         public void AddBulk(TData[] items)
         {
             DataList.AddRange(items);
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, items.ToList()));
+            OnCollectionChanged(
+                new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, items.ToList()));
         }
 
         public void RemoveBulk(TData[] items)
         {
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, items.ToList()));
+            OnCollectionChanged(
+                new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, items.ToList()));
         }
 
         public void RemoveWhere(Func<TData, bool> func)
