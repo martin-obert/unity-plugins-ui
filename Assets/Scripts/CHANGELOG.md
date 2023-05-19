@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/martin-obert/unity-plugins-ui/compare/v1.1.2...v1.2.0) (2023-05-19)
+
+
+### Features
+
+* reactive repeaters ([#25](https://github.com/martin-obert/unity-plugins-ui/issues/25)) ([0dc443b](https://github.com/martin-obert/unity-plugins-ui/commit/0dc443b2b88ca67b19641372f6e2649d60339966))
+
 ## [1.1.2](https://github.com/martin-obert/unity-plugins-ui/compare/v1.1.1...v1.1.2) (2023-05-19)
 
 
