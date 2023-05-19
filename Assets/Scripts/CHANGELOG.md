@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/martin-obert/unity-plugins-ui/compare/v1.1.1...v1.1.2) (2023-05-19)
+
+
+### Bug Fixes
+
+* update package readme ([#21](https://github.com/martin-obert/unity-plugins-ui/issues/21)) ([95d55bc](https://github.com/martin-obert/unity-plugins-ui/commit/95d55bcbf75a96c13e89511960b924a6bad310b4))
+
 ## [1.1.1](https://github.com/martin-obert/unity-plugins-ui/compare/v1.1.0...v1.1.1) (2023-05-19)
 
 
