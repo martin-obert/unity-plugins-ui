@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/martin-obert/unity-plugins-ui/compare/v1.1.0...v1.1.1) (2023-05-19)
+
+
+### Bug Fixes
+
+* Placeholder Data Sources ([5f1e371](https://github.com/martin-obert/unity-plugins-ui/commit/5f1e371d435d437dc78051fd6a4865f495d49da2))
+
 ## [1.1.0](https://github.com/martin-obert/unity-plugins-ui/compare/v1.0.2...v1.1.0) (2023-05-19)
 
 
