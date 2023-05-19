@@ -20,8 +20,11 @@ namespace Obert.UI.Runtime.Repeaters
 
     public interface IDataSource<TData> : IReadOnlyDataSource<TData>, INotifyCollectionChanged
     {
-
         void AddItem(TData item);
         void RemoveItem(TData item);
+        void AddBulk(TData[] items);
+
+        void RemoveBulk(TData[] items);
+        void RemoveWhere(Func<TData, bool> func);
     }
 }

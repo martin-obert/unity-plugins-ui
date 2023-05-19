@@ -60,6 +60,22 @@ namespace Obert.UI.Runtime.Repeaters
             if (DataList.Remove(item)) OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
         }
 
+        public void AddBulk(TData[] items)
+        {
+            DataList.AddRange(items);
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, items.ToList()));
+        }
+
+        public void RemoveBulk(TData[] items)
+        {
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, items.ToList()));
+        }
+
+        public void RemoveWhere(Func<TData, bool> func)
+        {
+            RemoveBulk(DataList.Where(func).ToArray());
+        }
+
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             CollectionChanged?.Invoke(this, e);
