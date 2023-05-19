@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Obert.UI.Runtime.Repeaters
 {
-    public abstract class ScriptableDataSource<TData> : ScriptableDataSourceBase, IDataSource<TData>
+    public abstract class ScriptableDataSource<TData> : ScriptableDataSourceBase, IReadOnlyDataSource<TData>
     {
         public abstract TData[] DataItems { get; }
 
