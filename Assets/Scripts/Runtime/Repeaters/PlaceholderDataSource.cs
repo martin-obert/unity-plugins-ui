@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using UnityEngine;
@@ -23,7 +24,18 @@ namespace Obert.UI.Runtime.Repeaters
 
         public object[] Items => DataItems.Cast<object>().ToArray();
 
-        public TData[] DataItems { get; private set; }
+        public TData[] DataItems => DataList.ToArray();
+
+        protected readonly List<TData> DataList = new();
+
+        protected PlaceholderDataSource()
+        {
+        }
+
+        protected PlaceholderDataSource(IEnumerable<TData> dataItems)
+        {
+            DataList = new List<TData>(dataItems);
+        }
 
         public void BindItem<TItemInstance>(object data, TItemInstance instance) where TItemInstance : Component
         {
@@ -39,14 +51,29 @@ namespace Obert.UI.Runtime.Repeaters
 
         public virtual void AddItem(TData item)
         {
-            DataItems = DataItems.Append(item).ToArray();
+            DataList.Add(item);
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
         }
 
         public virtual void RemoveItem(TData item)
         {
-            DataItems = DataItems.Where(x => !ReferenceEquals(x, item)).ToArray();
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
+            if (DataList.Remove(item)) OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
+        }
+
+        public void AddBulk(TData[] items)
+        {
+            DataList.AddRange(items);
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, items.ToList()));
+        }
+
+        public void RemoveBulk(TData[] items)
+        {
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, items.ToList()));
+        }
+
+        public void RemoveWhere(Func<TData, bool> func)
+        {
+            RemoveBulk(DataList.Where(func).ToArray());
         }
 
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
