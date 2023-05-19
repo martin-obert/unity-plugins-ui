@@ -5,15 +5,15 @@ namespace Obert.UI.Runtime.Repeaters
 {
     public abstract class RepeaterView : MonoBehaviour
     {
-        public abstract void BindDataSource(IDataSource dataSource);
+        public abstract void BindDataSource(IReadOnlyDataSource dataSource);
     }
-    
+
     public abstract class RepeaterView<TData, TItemInstance> : RepeaterView where TItemInstance : Component
     {
         [SerializeField] private Transform container;
         private TItemInstance[] _instances = Array.Empty<TItemInstance>();
         protected Transform Container => container;
-        
+
         private void Awake()
         {
             if (!container)
@@ -22,9 +22,9 @@ namespace Obert.UI.Runtime.Repeaters
 
         protected abstract Func<TItemInstance> ItemFactory { get; }
 
-        public override void BindDataSource(IDataSource dataSource) => BindDataSource((IDataSource<TData>)dataSource);
+        public override void BindDataSource(IReadOnlyDataSource dataSource) => BindDataSource((IReadOnlyDataSource<TData>)dataSource);
 
-        public void BindDataSource(IDataSource<TData> dataSource) => BindData(dataSource.DataItems, dataSource.BindItem);
+        public void BindDataSource(IReadOnlyDataSource<TData> dataSource) => BindData(dataSource.DataItems, dataSource.BindItem);
 
         public void BindData(TData[] data, Action<TData, TItemInstance> bindAction)
         {
