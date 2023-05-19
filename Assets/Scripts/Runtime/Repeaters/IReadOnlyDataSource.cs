@@ -23,6 +23,7 @@ namespace Obert.UI.Runtime.Repeaters
     /// </summary>
     /// <typeparam name="TData">Override <see cref="object.Equals(object)"/> to make the repeater reactive</typeparam>
     public interface IDataSource<TData> : IReadOnlyDataSource<TData>, INotifyCollectionChanged
+
     {
         void AddItem(TData item);
         void RemoveItem(TData item);
