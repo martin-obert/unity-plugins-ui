@@ -9,7 +9,9 @@ namespace Obert.UI.Runtime.Repeaters
     public abstract class PlaceholderDataSource<TData, TView> : PlaceholderDataSource<TData> where TView : Component
     {
         protected abstract void BindItem(TData data, TView view);
-
+        protected PlaceholderDataSource(IEnumerable<TData> dataItems) :base(dataItems)
+        {
+        }
         public override void BindItem<TItemInstance>(TData data, TItemInstance instance)
         {
             if (instance is not TView view) throw new Exception();
