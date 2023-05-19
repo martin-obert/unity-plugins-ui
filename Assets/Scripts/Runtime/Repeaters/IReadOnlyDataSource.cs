@@ -18,7 +18,12 @@ namespace Obert.UI.Runtime.Repeaters
         void BindItem<TItemInstance>(TData data, TItemInstance instance) where TItemInstance : Component;
     }
 
-    public interface IDataSource<TData> : IReadOnlyDataSource<TData>, INotifyCollectionChanged
+    public interface IDataSource : INotifyCollectionChanged
+    {
+
+    }
+
+    public interface IDataSource<TData> : IReadOnlyDataSource<TData>, IDataSource
     {
         void AddItem(TData item);
         void RemoveItem(TData item);

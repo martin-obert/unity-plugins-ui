@@ -1,59 +1,80 @@
 ﻿using System;
+using System.Collections.Generic;
+using Obert.Common.Runtime.Extensions;
 using UnityEngine;
 
 namespace Obert.UI.Runtime.Repeaters
 {
     public abstract class RepeaterView : MonoBehaviour
     {
-        public abstract void BindDataSource(IReadOnlyDataSource dataSource);
+        public abstract void BindDataSource(IReadOnlyDataSource readOnlyDataSource);
     }
 
     public abstract class RepeaterView<TData, TItemInstance> : RepeaterView where TItemInstance : Component
     {
         [SerializeField] private Transform container;
-        private TItemInstance[] _instances = Array.Empty<TItemInstance>();
+        [SerializeField] private bool showEmptySlots;
+        [SerializeField] private int emptySlotsCount;
+
+        private readonly List<TItemInstance> _instances = new();
+        private GameObject[] _emptyInstances = Array.Empty<GameObject>();
+        protected List<TItemInstance> Instances => _instances;
         protected Transform Container => container;
 
-        private void Awake()
+
+        protected virtual void Awake()
         {
             if (!container)
                 container = transform;
         }
 
-        protected abstract Func<TItemInstance> ItemFactory { get; }
-
-        public override void BindDataSource(IReadOnlyDataSource dataSource) => BindDataSource((IReadOnlyDataSource<TData>)dataSource);
-
-        public void BindDataSource(IReadOnlyDataSource<TData> dataSource) => BindData(dataSource.DataItems, dataSource.BindItem);
-
-        public void BindData(TData[] data, Action<TData, TItemInstance> bindAction)
+        protected virtual void Start()
         {
-            if (data.Length > _instances.Length)
+            if (!showEmptySlots) return;
+
+            container.ClearChildGameObjects();
+            _emptyInstances = new GameObject[emptySlotsCount];
+            for (var i = 0; i < _emptyInstances.Length; i++)
             {
-                var temp = _instances;
-                _instances = new TItemInstance[data.Length];
-                Array.Copy(temp, _instances, temp.Length);
+                _emptyInstances[i] = EmptySlotFactory.Invoke();
             }
+        }
 
-            for (int i = 0; i < data.Length; i++)
+        protected abstract Func<TItemInstance> ItemFactory { get; }
+        protected virtual Func<GameObject> EmptySlotFactory { get; }
+
+        private IDisposable _dataSourceSub;
+
+        public override void BindDataSource(IReadOnlyDataSource readOnlyDataSource) => BindDataSource((IReadOnlyDataSource<TData>)readOnlyDataSource);
+
+        protected virtual void BindDataSource(IReadOnlyDataSource<TData> dataSource) => BindData(dataSource.DataItems, dataSource.BindItem);
+
+
+        protected virtual void CreateInstance(TData data, Action<TData, TItemInstance> bindAction)
+        {
+            var instance = ItemFactory();
+            bindAction(data, instance);
+            _instances.Add(instance);
+        }
+
+        protected virtual void DeleteInstance(TItemInstance instance)
+        {
+            _instances.Remove(instance);
+        }
+
+        protected virtual void ClearAllInstances()
+        {
+            Container.ClearChildGameObjects();
+            _instances.Clear();
+        }
+
+        protected virtual void BindData(TData[] data, Action<TData, TItemInstance> bindAction)
+        {
+            ClearAllInstances();
+
+            for (var i = 0; i < data.Length; i++)
             {
-                var instance = _instances[i];
-                if (instance == null)
-                {
-                    _instances[i] = instance = ItemFactory();
-                }
-
-                bindAction(data[i], instance);
-                _instances[i].gameObject.SetActive(true);
-            }
-
-            var overflowInstances = _instances.Length - data.Length;
-            if (overflowInstances > 0)
-            {
-                for (int i = data.Length - 1; i < _instances.Length; i++)
-                {
-                    _instances[i].gameObject.SetActive(false);
-                }
+                CreateInstance(data[i], bindAction);
             }
         }
     }
