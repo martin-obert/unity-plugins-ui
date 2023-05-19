@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Obert.Common.Runtime.Extensions;
 using UnityEngine;
 
@@ -13,14 +14,14 @@ namespace Obert.UI.Runtime.Repeaters
     public abstract class RepeaterView<TData, TItemInstance> : RepeaterView where TItemInstance : Component
     {
         [SerializeField] private Transform container;
+      
         [SerializeField] private bool showEmptySlots;
         [SerializeField] private int emptySlotsCount;
 
-        private readonly List<TItemInstance> _instances = new();
         private GameObject[] _emptyInstances = Array.Empty<GameObject>();
-        protected List<TItemInstance> Instances => _instances;
-        protected Transform Container => container;
+        protected List<TItemInstance> Instances { get; } = new();
 
+        protected Transform Container => container;
 
         protected virtual void Awake()
         {
@@ -45,36 +46,55 @@ namespace Obert.UI.Runtime.Repeaters
 
         private IDisposable _dataSourceSub;
 
-        public override void BindDataSource(IReadOnlyDataSource readOnlyDataSource) => BindDataSource((IReadOnlyDataSource<TData>)readOnlyDataSource);
+        public override void BindDataSource(IReadOnlyDataSource readOnlyDataSource) =>
+            BindDataSource((IReadOnlyDataSource<TData>)readOnlyDataSource);
 
-        protected virtual void BindDataSource(IReadOnlyDataSource<TData> dataSource) => BindData(dataSource.DataItems, dataSource.BindItem);
+        protected virtual void BindDataSource(IReadOnlyDataSource<TData> dataSource) =>
+            BindData(dataSource.DataItems, dataSource.BindItem);
 
 
         protected virtual void CreateInstance(TData data, Action<TData, TItemInstance> bindAction)
         {
-            var instance = ItemFactory();
-            bindAction(data, instance);
-            _instances.Add(instance);
+            var freeInstance = Instances.FirstOrDefault(x => !x.gameObject.activeInHierarchy);
+            if (!freeInstance)
+            {
+                freeInstance = ItemFactory();
+                if (showEmptySlots)
+                {
+                    freeInstance.transform.SetSiblingIndex(Instances.Count(x => x.gameObject.activeInHierarchy));
+                }
+
+                Instances.Add(freeInstance);
+            }
+
+            bindAction(data, freeInstance);
+            freeInstance.gameObject.SetActive(true);
+            _emptyInstances.FirstOrDefault(x => x.activeInHierarchy)?.SetActive(false);
         }
 
         protected virtual void DeleteInstance(TItemInstance instance)
         {
-            _instances.Remove(instance);
+            instance.gameObject.SetActive(false);
+            _emptyInstances.LastOrDefault(x => !x.activeInHierarchy)?.SetActive(true);
         }
 
         protected virtual void ClearAllInstances()
         {
-            Container.ClearChildGameObjects();
-            _instances.Clear();
+            foreach (var itemInstance in Instances)
+            {
+                DeleteInstance(itemInstance);
+            }
         }
 
-        protected virtual void BindData(TData[] data, Action<TData, TItemInstance> bindAction)
+        protected virtual void BindData(IEnumerable<TData> data, Action<TData, TItemInstance> bindAction)
         {
+            var items = data as TData[] ?? data.ToArray();
+
             ClearAllInstances();
 
-            for (var i = 0; i < data.Length; i++)
+            foreach (var t in items)
             {
-                CreateInstance(data[i], bindAction);
+                CreateInstance(t, bindAction);
             }
         }
     }

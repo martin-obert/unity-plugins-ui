@@ -12,13 +12,13 @@ namespace Obert.UI.Runtime.Repeaters
     /// <typeparam name="TItemInstance"></typeparam>
     public abstract class ReactiveRepeaterView<TData, TItemInstance> : RepeaterView<TData, TItemInstance> where TItemInstance : Component
     {
-
         private IDataSource<TData> _dataSource;
 
         protected override void BindDataSource(IReadOnlyDataSource<TData> readOnlyDataSource)
         {
-            if (readOnlyDataSource is not IDataSource<TData> dataSource) throw new Exception();
+            base.BindDataSource(readOnlyDataSource);
 
+            if (readOnlyDataSource is not IDataSource<TData> dataSource) throw new Exception();
             UnbindDataSource();
             _dataSource = dataSource;
             BindDataSource();
@@ -52,10 +52,17 @@ namespace Obert.UI.Runtime.Repeaters
                     foreach (var newItem in e.NewItems)
                     {
                         var data = (TData)newItem;
-                        var freeInstance = Instances.FirstOrDefault(x => !x.gameObject.activeInHierarchy);
-                        if (!freeInstance)
+                        CreateInstance(data, _dataSource.BindItem);
+                    }
+                    return;
+                
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (var oldItem in e.OldItems)
+                    {
+                        var freeInstance = Instances.FirstOrDefault(x => x.Equals(oldItem));
+                        if (freeInstance)
                         {
-                            CreateInstance(data, _dataSource.BindItem);
+                            DeleteInstance(freeInstance);
                         }
                     }
                     return;
