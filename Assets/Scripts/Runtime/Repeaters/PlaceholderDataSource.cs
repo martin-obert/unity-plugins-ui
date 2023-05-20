@@ -32,9 +32,9 @@ namespace Obert.UI.Runtime.Repeaters
 
         public object[] Items => DataItems.Cast<object>().ToArray();
 
-        public TData[] DataItems => DataList.ToArray();
+        public TData[] DataItems => _dataList.ToArray();
 
-        protected readonly List<TData> DataList = new();
+        private readonly List<TData> _dataList = new();
 
         protected PlaceholderDataSource()
         {
@@ -42,7 +42,7 @@ namespace Obert.UI.Runtime.Repeaters
 
         protected PlaceholderDataSource(IEnumerable<TData> dataItems)
         {
-            DataList = new List<TData>(dataItems);
+            _dataList = new List<TData>(dataItems);
         }
 
         public void BindItem<TItemInstance>(object data, TItemInstance instance) where TItemInstance : Component
@@ -55,42 +55,52 @@ namespace Obert.UI.Runtime.Repeaters
             BindItem(item, instance);
         }
 
-        public abstract void BindItem<TItemInstance>(TData data, TItemInstance instance)
-            where TItemInstance : Component;
+        public abstract void BindItem<TItemInstance>(TData data, TItemInstance instance) where TItemInstance : Component;
 
         public virtual void AddItem(TData item)
         {
-            DataList.Add(item);
+            _dataList.Add(item);
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
         }
 
         public virtual void RemoveItem(TData item)
         {
-            if (DataList.Remove(item))
+            if (_dataList.Remove(item))
                 OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
         }
 
-        public void AddBulk(TData[] items)
+        public virtual void AddBulk(TData[] items)
         {
-            DataList.AddRange(items);
+            _dataList.AddRange(items);
             OnCollectionChanged(
                 new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, items.ToList()));
         }
 
-        public void RemoveBulk(TData[] items)
+        public virtual void RemoveBulk(TData[] items)
         {
-            OnCollectionChanged(
-                new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, items.ToList()));
+            foreach (var item in items)
+            {
+                _dataList.Remove(item);
+            }
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, items.ToList()));
         }
 
-        public void RemoveWhere(Func<TData, bool> func)
+        public virtual void RemoveWhere(Func<TData, bool> func)
         {
-            RemoveBulk(DataList.Where(func).ToArray());
+            RemoveBulk(_dataList.Where(func).ToArray());
         }
 
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             CollectionChanged?.Invoke(this, e);
+        }
+
+        public virtual void Clear()
+        {
+            var itemsCopy = _dataList.ToArray();
+            _dataList.Clear();
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, itemsCopy.ToList()));
+
         }
     }
 }
