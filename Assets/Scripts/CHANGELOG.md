@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/martin-obert/unity-plugins-ui/compare/v1.2.0...v1.3.0) (2023-05-20)
+
+
+### Features
+
+* clear all data from placeholder ([#27](https://github.com/martin-obert/unity-plugins-ui/issues/27)) ([9579e2b](https://github.com/martin-obert/unity-plugins-ui/commit/9579e2b7e708eff3fe574e03a462eb8021e5ffac))
+
 ## [1.2.0](https://github.com/martin-obert/unity-plugins-ui/compare/v1.1.2...v1.2.0) (2023-05-19)
 
 
