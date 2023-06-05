@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/martin-obert/unity-plugins-ui/compare/v1.3.0...v1.3.1) (2023-06-05)
+
+
+### Bug Fixes
+
+* Update RepeaterView.cs ([#29](https://github.com/martin-obert/unity-plugins-ui/issues/29)) ([6c57dc4](https://github.com/martin-obert/unity-plugins-ui/commit/6c57dc42ba80371a4df242046e495a62e3a44b34))
+
 ## [1.3.0](https://github.com/martin-obert/unity-plugins-ui/compare/v1.2.0...v1.3.0) (2023-05-20)
 
 
