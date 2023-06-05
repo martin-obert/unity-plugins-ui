@@ -55,7 +55,7 @@ namespace Obert.UI.Runtime.Repeaters
 
         protected virtual void CreateInstance(TData data, Action<TData, TItemInstance> bindAction)
         {
-            var freeInstance = Instances.FirstOrDefault(x => !x.gameObject.activeInHierarchy);
+            var freeInstance = Instances.FirstOrDefault(x => !x.gameObject.activeSelf);
             if (!freeInstance)
             {
                 freeInstance = ItemFactory();
