@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/martin-obert/unity-plugins-ui/compare/v1.3.1...v1.3.2) (2023-07-28)
+
+
+### Bug Fixes
+
+* IDisposable considered if deleting repeater item ([#31](https://github.com/martin-obert/unity-plugins-ui/issues/31)) ([4878eac](https://github.com/martin-obert/unity-plugins-ui/commit/4878eac6b707d24dfb5d79f4bc4d60d58c47024d))
+
 ## [1.3.1](https://github.com/martin-obert/unity-plugins-ui/compare/v1.3.0...v1.3.1) (2023-06-05)
 
 
