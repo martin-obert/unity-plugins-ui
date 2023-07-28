@@ -14,7 +14,7 @@ namespace Obert.UI.Runtime.Repeaters
     public abstract class RepeaterView<TData, TItemInstance> : RepeaterView where TItemInstance : Component
     {
         [SerializeField] private Transform container;
-      
+
         [SerializeField] private bool showEmptySlots;
         [SerializeField] private int emptySlotsCount;
 
@@ -66,6 +66,10 @@ namespace Obert.UI.Runtime.Repeaters
 
                 Instances.Add(freeInstance);
             }
+            else if (freeInstance is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
 
             bindAction(data, freeInstance);
             freeInstance.gameObject.SetActive(true);
@@ -74,6 +78,11 @@ namespace Obert.UI.Runtime.Repeaters
 
         protected virtual void DeleteInstance(TItemInstance instance)
         {
+            if (instance is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
+
             instance.gameObject.SetActive(false);
             _emptyInstances.LastOrDefault(x => !x.activeInHierarchy)?.SetActive(true);
         }
